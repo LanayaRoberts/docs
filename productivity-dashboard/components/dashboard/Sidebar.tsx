@@ -1,0 +1,81 @@
+"use client";
+
+import { LayoutDashboard, CheckSquare, Repeat2, StickyNote, Timer, Sparkles } from "lucide-react";
+import clsx from "clsx";
+
+type View = "overview" | "tasks" | "habits" | "notes" | "timer";
+
+const navItems: { id: View; label: string; icon: React.ComponentType<{ size?: number; strokeWidth?: number }> }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "tasks", label: "Tasks", icon: CheckSquare },
+  { id: "habits", label: "Habits", icon: Repeat2 },
+  { id: "notes", label: "Notes", icon: StickyNote },
+  { id: "timer", label: "Focus Timer", icon: Timer },
+];
+
+export default function Sidebar({
+  activeView,
+  onViewChange,
+}: {
+  activeView: View;
+  onViewChange: (v: View) => void;
+}) {
+  return (
+    <aside className="fixed left-0 top-0 h-full w-64 bg-[var(--bg-card)] border-r border-[var(--border-subtle)] flex flex-col z-20">
+      {/* Logo */}
+      <div className="p-6 border-b border-[var(--border-subtle)]">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--lavender)] to-[var(--jade)] flex items-center justify-center">
+            <Sparkles size={14} strokeWidth={2.5} className="text-white" />
+          </div>
+          <div>
+            <h2 className="font-display text-lg text-[var(--text-primary)] leading-none">Focus</h2>
+            <p className="text-[var(--text-muted)] text-xs mt-0.5">Productivity OS</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4">
+        <p className="text-[var(--text-muted)] text-xs font-mono uppercase tracking-widest mb-3 px-2">
+          Navigation
+        </p>
+        <ul className="space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeView === item.id;
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => onViewChange(item.id)}
+                  className={clsx(
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
+                    isActive
+                      ? "bg-[var(--lavender)] text-white shadow-lg shadow-[rgba(167,139,250,0.25)]"
+                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]"
+                  )}
+                >
+                  <Icon size={16} strokeWidth={2} />
+                  <span className="font-medium">{item.label}</span>
+                  {isActive && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white/60" />
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Bottom section */}
+      <div className="p-4 border-t border-[var(--border-subtle)]">
+        <div className="card-elevated p-3">
+          <p className="text-[var(--text-muted)] text-xs mb-2">Tip of the day</p>
+          <p className="text-[var(--text-secondary)] text-xs leading-relaxed">
+            Complete your 3 most important tasks first. The rest is a bonus.
+          </p>
+        </div>
+      </div>
+    </aside>
+  );
+}
